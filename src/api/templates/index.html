@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NBA Over Under Predictor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #1a1a1a;
+            margin-top: 0;
+        }
+        .description {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .health-status {
+            background-color: #f0f0f0;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+        .health-status.error {
+            background-color: #ffe6e6;
+            color: #cc0000;
+        }
+        .health-status.ok {
+            background-color: #e6ffe6;
+            color: #006600;
+        }
+        form {
+            display: grid;
+            gap: 15px;
+        }
+        .form-group {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 10px;
+            align-items: center;
+        }
+        label {
+            font-weight: bold;
+            color: #333;
+        }
+        input[type="text"],
+        input[type="number"] {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            display: none;
+        }
+        .result.show {
+            display: block;
+        }
+        .result h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .result-item {
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        .result-item strong {
+            color: #007bff;
+        }
+        .error-message {
+            color: #cc0000;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>NBA Over Under Predictor</h1>
+        <p class="description">
+            This application predicts whether an NBA player will score over or under a specified points line 
+            based on their game statistics. Enter the player's information and statistics below to get a prediction.
+        </p>
+
+        <div id="healthStatus" class="health-status">
+            Loading health status...
+        </div>
+
+        <form id="predictionForm">
+            <div class="form-group">
+                <label for="player_name">Player Name:</label>
+                <input type="text" id="player_name" name="player_name" required>
+            </div>
+            <div class="form-group">
+                <label for="points_line">Points Line:</label>
+                <input type="number" id="points_line" name="points_line" step="0.5" required>
+            </div>
+            <div class="form-group">
+                <label for="minutes">Minutes:</label>
+                <input type="number" id="minutes" name="minutes" step="0.1" required>
+            </div>
+            <div class="form-group">
+                <label for="rebounds">Rebounds:</label>
+                <input type="number" id="rebounds" name="rebounds" step="0.1" required>
+            </div>
+            <div class="form-group">
+                <label for="assists">Assists:</label>
+                <input type="number" id="assists" name="assists" step="0.1" required>
+            </div>
+            <div class="form-group">
+                <label for="field_goals_attempted">Field Goals Attempted:</label>
+                <input type="number" id="field_goals_attempted" name="field_goals_attempted" step="0.1" required>
+            </div>
+            <div class="form-group">
+                <label for="three_pa">Three Point Attempts:</label>
+                <input type="number" id="three_pa" name="three_pa" step="0.1" required>
+            </div>
+            <div class="form-group">
+                <label for="free_throws_attempted">Free Throws Attempted:</label>
+                <input type="number" id="free_throws_attempted" name="free_throws_attempted" step="0.1" required>
+            </div>
+            <button type="submit" id="predictButton">Predict</button>
+        </form>
+
+        <div id="result" class="result">
+            <h3>Prediction Result</h3>
+            <div class="result-item">
+                <strong>Probability (Over):</strong> <span id="probOver"></span>
+            </div>
+            <div class="result-item">
+                <strong>Prediction:</strong> <span id="prediction"></span>
+            </div>
+            <div class="result-item">
+                <strong>Points Line:</strong> <span id="pointsLine"></span>
+            </div>
+        </div>
+
+        <div id="errorMessage" class="error-message"></div>
+    </div>
+
+    <script>
+        // Load health status on page load
+        async function loadHealthStatus() {
+            const healthDiv = document.getElementById('healthStatus');
+            try {
+                const response = await fetch('/health');
+                const data = await response.json();
+                
+                if (data.status === 'ok' && data.model_loaded && data.db_connected) {
+                    healthDiv.className = 'health-status ok';
+                    healthDiv.textContent = `API Status: ${data.status}, Model Loaded: ${data.model_loaded}, Database Connected: ${data.db_connected}`;
+                } else {
+                    healthDiv.className = 'health-status error';
+                    healthDiv.textContent = `API Status: ${data.status}, Model Loaded: ${data.model_loaded}, Database Connected: ${data.db_connected}`;
+                }
+            } catch (error) {
+                healthDiv.className = 'health-status error';
+                healthDiv.textContent = `Error loading health status: ${error.message}`;
+            }
+        }
+
+        // Handle form submission
+        document.getElementById('predictionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const button = document.getElementById('predictButton');
+            const resultDiv = document.getElementById('result');
+            const errorDiv = document.getElementById('errorMessage');
+            
+            // Clear previous results
+            resultDiv.classList.remove('show');
+            errorDiv.textContent = '';
+            button.disabled = true;
+            button.textContent = 'Predicting...';
+            
+            // Build request body
+            const requestBody = {
+                player_name: document.getElementById('player_name').value,
+                points_line: parseFloat(document.getElementById('points_line').value),
+                features: {
+                    minutes: parseFloat(document.getElementById('minutes').value),
+                    rebounds: parseFloat(document.getElementById('rebounds').value),
+                    assists: parseFloat(document.getElementById('assists').value),
+                    field_goals_attempted: parseFloat(document.getElementById('field_goals_attempted').value),
+                    three_pa: parseFloat(document.getElementById('three_pa').value),
+                    free_throws_attempted: parseFloat(document.getElementById('free_throws_attempted').value)
+                }
+            };
+            
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                // Display results
+                document.getElementById('probOver').textContent = (data.prob_over * 100).toFixed(2) + '%';
+                document.getElementById('prediction').textContent = data.prediction.toUpperCase();
+                document.getElementById('pointsLine').textContent = data.points_line;
+                resultDiv.classList.add('show');
+                
+            } catch (error) {
+                errorDiv.textContent = `Error: ${error.message}`;
+            } finally {
+                button.disabled = false;
+                button.textContent = 'Predict';
+            }
+        });
+        
+        // Load health status when page loads
+        loadHealthStatus();
+    </script>
+</body>
+</html>
+
