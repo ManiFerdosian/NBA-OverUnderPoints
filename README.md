@@ -7,7 +7,7 @@ Sports bettors, fantasy basketball players, and fans often want to estimate whet
 
 # Solution
 
-This project provides a deployed web application that predicts the probability a player scores over 30 points in their next game. The system uses recent game averages, a trained PyTorch model, and a clean, interactive FastAPI web interface. Users select a player, click Predict, and immediately see both the prediction and the supporting game statistics, making the model’s reasoning transparent.
+This project provides a deployed web application that predicts the probability a player scores over 30 points in their next game (often an indicator that a player is exceptional and is considered elite in professional basketball). The system uses recent game averages, a trained PyTorch model, and a clean, interactive FastAPI web interface. Users select a player, click Predict, and immediately see both the prediction and the supporting game statistics, making the model’s reasoning transparent.
 
 # 2) System Overview
 # Course Concepts Used
