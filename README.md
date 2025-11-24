@@ -24,7 +24,7 @@ Cloud Deployment via Azure App Service (Module: Cloud Deployment)
 
 Architecture Diagram           
 
-![Architecture Diagram](assets/architecture.png)
+![Architecture Diagram](assets/architecturePic.png)
 Then, it is wrapped and deployed in Docker and Azure   
 
 Data, Models & Services
