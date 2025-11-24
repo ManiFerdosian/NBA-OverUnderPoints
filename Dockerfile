@@ -19,9 +19,8 @@ COPY data/ ./data/
 # Ensure directories exist (no-op if already there)
 RUN mkdir -p data models
 
-# Build-time data + model pipeline
-RUN python -m src.data_pipeline.load_nba_data
-RUN python -m src.ml.train_model
+# Copy local trained model instead of running the training script
+COPY models/ ./models/
 
 # Expose container port
 EXPOSE 8090
@@ -29,7 +28,7 @@ EXPOSE 8090
 # Environment variables
 ENV API_PORT=8090
 ENV DB_PATH=data/db.nba.sqlite
-ENV MODEL_PATH=models/nba_over20_model.pt
+ENV MODEL_PATH=models/nba_over30_model.pt
 
 # Start the API server
 CMD sh -c "uvicorn src.api.main:app --host 0.0.0.0 --port ${API_PORT:-8090}"
