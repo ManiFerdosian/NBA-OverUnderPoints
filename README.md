@@ -1,16 +1,16 @@
-NBA Over/Under Predictor 
+# NBA Over/Under Predictor 
 
-1) Executive Summary
-Problem
+# 1) Executive Summary
+# Problem
 
 Sports bettors, fantasy basketball players, and fans often want to estimate whether a player will score over or under a target point line in their next game. Manually analyzing recent performance is time-consuming and error-prone.
 
-Solution
+# Solution
 
 This project provides a deployed web application that predicts the probability a player scores over 30 points in their next game. The system uses recent game averages, a trained PyTorch model, and a clean, interactive FastAPI web interface. Users select a player, click Predict, and immediately see both the prediction and the supporting game statistics, making the model’s reasoning transparent.
 
-2) System Overview
-Course Concepts Used
+# 2) System Overview
+# Course Concepts Used
 
 FastAPI Web Services (Module: Web Services)
 
@@ -18,11 +18,10 @@ SQLite Database Integration (Module: Databases)
 
 Docker Containerization (Module: DevOps & Containers)
 
-PyTorch Modeling (Module: Machine Learning)
+PyTorch Modeling 
 
-Cloud Deployment via Azure App Service (Module: Cloud Deployment)
 
-Architecture Diagram           
+# Architecture Diagram           
 
 ![Architecture Diagram](assets/architecturePic.png)
 Then, it is wrapped and deployed in Docker and Azure   
@@ -41,22 +40,23 @@ Services: FastAPI backend, HTML/JS frontend, JSON API routes
 
 License: Educational use only (synthetic and curated data)
 
-3) How to Run (Local)
+# 3) How to Run (Local)
 Using Docker (recommended)
-# build the image
+
+# Build the image
 docker build -t nba-predictor:latest .
 
-# run container
+# Run container
 docker run --rm -p 8090:8090 --env-file .env nba-predictor:latest
 
-# health check
+# Health check
 curl http://localhost:8090/health
 
-Without Docker (developer mode)
+# Without Docker (developer mode)
 uvicorn src.api.main:app --host 0.0.0.0 --port 8090
 
-4) Design Decisions
-Why this approach?
+# 4) Design Decisions
+# Why this approach?
 
 FastAPI → simple routing, built-in docs, easy JSON APIs
 
@@ -66,27 +66,22 @@ SQLite → lightweight database ideal for containerization
 
 Docker → guarantees “it works everywhere”
 
-Azure App Service → one-click deployment for containerized apps
 
-Alternatives Considered
+# Alternatives Considered
 
 Flask (simpler but less structured than FastAPI)
 
-PostgreSQL (more powerful, unnecessary for small datasets)
-
 Real-time NBA API Scraping (out of scope + rate limits + API keys)
 
-Tradeoffs
+# Tradeoffs
 
 Performance: Lightweight model; inference is instantaneous
-
-Cost: Azure App Service free tier sufficient
 
 Complexity: Building DB + model pipeline adds initial work
 
 Maintainability: Synthetic dataset → predictable but not real-time
 
-Security & Privacy
+# Security & Privacy
 
 No PII collected
 
@@ -96,21 +91,21 @@ No secrets in code (environment variables used via .env)
 
 Input validation handled by Pydantic
 
-Ops Considerations
+# Ops Considerations
 
 Health endpoint: /health
 
 Evaluation endpoint: /evaluate (metrics + dataset stats)
 
-Logs: Handled by Uvicorn and Azure App Service
+Logs: Handled by Uvicorn
 
-Limitations:
+# Limitations:
 
 Model trained on static dataset
 
 Does not pull live NBA performance data
 
-Predicts only “Over 30 Points”
+Mooel predicts only “Over 30 Points”
 
 5) Results & Evaluation
 Model Performance
@@ -121,7 +116,7 @@ Model Performance
 The /docs route is the FastAPI Swagger UI that automatically documents all API endpoints, showing available models, responses, and allowing interactive testing.
 
 
-Validation
+# Validation
 
 Model tested on a separate evaluation set
 
@@ -129,7 +124,7 @@ FastAPI tested via /docs + manual UI testing
 
 Database integrity verified at app startup
 
-6) What’s Next
+# 6) What’s Next
 Planned Improvements
 
 Add live NBA API integration
