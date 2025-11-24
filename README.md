@@ -22,25 +22,7 @@ PyTorch Modeling (Module: Machine Learning)
 
 Cloud Deployment via Azure App Service (Module: Cloud Deployment)
 
-Architecture Diagram
-┌──────────────────────┐          HTTP Requests         ┌──────────────────────────┐
-│                      │ ─────────────────────────────▶ │                          │
-│   User Web Browser   │                                │      FastAPI Backend     │
-│  (index.html + JS)   │ ◀───────────────────────────── │   (API + UI Rendering)   │
-└──────────────────────┘          JSON Responses         └──────────┬──────────────┘
-                                                                      │
-                                                                      │
-                                                                      ▼
-                                                          ┌──────────────────────────┐
-                                                          │   PyTorch Model (.pt)    │
-                                                          │  Predicts Over/Under 30  │
-                                                          └──────────────────────────┘
-                                                                      │
-                                                                      ▼
-                                                          ┌──────────────────────────┐
-                                                          │      SQLite Database     │
-                                                          │  (Historical Game Logs)  │
-                                                          └──────────────────────────┘                                                       
+Architecture Diagram           
 
 ![Architecture Diagram](assets/architecture.png)
 Then, it is wrapped and deployed in Docker and Azure   
@@ -135,6 +117,9 @@ Model Performance
 
 ![UI Screenshot](assets/ui.png)
 ![UI Screenshot](assets/ui2.png)
+![UI Screenshot](assets/ui3.png)
+The /docs route is the FastAPI Swagger UI that automatically documents all API endpoints, showing available models, responses, and allowing interactive testing.
+
 
 Validation
 
